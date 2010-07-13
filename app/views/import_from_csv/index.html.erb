@@ -1,20 +1,11 @@
-<% form_for :dump, :url=>{:controller=>"import_from_csv", :action=>"csv_import"}, :html => { :multipart => true } do |f| -%>
- <table>
-   <tr>
-     <td>
-      <label for="dump_file">
-        Select a CSV File :
-      </label>
-     </td>
-     <td >
-       <%= f.file_field :file -%>
-     </td>
-   </tr>
-   <tr>
-     <td colspan='2'>
-       <%= submit_tag 'Submit' -%>
-     </td>
-   </tr>
-	 <tr><input type="hidden" name="project_id" value="<%=@project.id%>" /></tr>
- </table>
-<% end -%>
+<% form_for :dump, :url=>{:controller=>"import_from_csv", :action=>"csv_import"}, :html => { :multipart => true } do |f| %>
+  <p><label for="dump_file"><h2>Select a CSV File :</h2>(Required format: Themes, Stories, Notes, Estimation (man days))</label></p>
+	<p>
+		<%= f.file_field :file %>
+		As:
+		<%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %>
+		<p>Expected daily working hours:<%= f.text_field :daily_working_hrs,:value=>"7",:size=>2 %></p>
+	</p>
+  <p><%= submit_tag 'Submit' %></p>
+	<input type="hidden" name="project_id" value="<%=@project.id%>" />
+<% end %>

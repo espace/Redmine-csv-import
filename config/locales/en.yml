@@ -1,4 +1,4 @@
 # English strings go here for Rails i18n
 en:
   Import_label: "Import issues from CSV"
-  error_bad_csv_format: "Bad file format.Should be as(Story text ID, Subject, Description, Estimated hrs) "
+  error_bad_csv_format: "Bad file format, Please consider the following format (Themes, Stories, Notes, Estimation (man days)) "
