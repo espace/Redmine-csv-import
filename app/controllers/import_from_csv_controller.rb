@@ -20,10 +20,7 @@ class ImportFromCsvController < ApplicationController
         story_id=row[0];subject=row[1]
         description=row[2];estimated_hrs=row[3]
         next if index==0
-#        if row.size!=4
-#          redirect_with_error l(:error_bad_csv_format),@project
-#          return
-#        end
+        total=total+1
         issue=Issue.new
         issue.project=@project
         issue.author=User.current
@@ -34,11 +31,12 @@ class ImportFromCsvController < ApplicationController
         issue.estimated_hours=estimated_hrs.to_f * params[:dump][:daily_working_hrs].to_f unless estimated_hrs.blank? and params[:dump][:daily_working_hrs].blank?
         if issue.save
           done=done+1
-          total=total+1
         else # invalid
-          unless issue.errors.invalid?(:text_id)
+          if issue.errors.invalid?(:text_id)
+            i_id=Issue.find_by_text_id(story_id).id
+            error_messages << "Line:#{index+1}..Error: #{issue.errors.full_messages.uniq.join(', ')} for this issue <a href=\"/issues/#{i_id}\">##{i_id}</a>"
+          else
             error_messages << "Line:#{index+1}..Error: #{issue.errors.full_messages.uniq.join(', ')}"
-            total=total+1
           end
         end
       end
@@ -47,11 +45,7 @@ class ImportFromCsvController < ApplicationController
       return
     end
     if done==total
-      unless done==0
-        flash[:notice]="CSV Import Successful, #{done} new issues have been created"
-      else
-        flash[:warning]="Issues have already been created (Duplicated Story Ids)"
-      end
+      flash[:notice]="CSV Import Successful, #{done} new issues have been created"
     else
       flash[:error]=format_error(done,total,error_messages)
     end

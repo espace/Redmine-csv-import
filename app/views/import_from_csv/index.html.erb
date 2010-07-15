@@ -2,7 +2,7 @@
   <input type="hidden" name="project_id" value="<%=@project.id%>" />
 	<fieldset>
     <p><label for="dump_file"><h2>Select a CSV File :</h2><%=l(:required_format)%></label></p>
-		<p><%= f.file_field :file %> As: <%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]} %></p>
+		<p><%= f.file_field :file %> As: <%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]},{:selected=>has_story_tracker?(@project)} %></p>
 	  <p>Expected daily working hours:<%= f.text_field :daily_working_hrs,:value=>"7",:size=>2 %></p>
 	  <p><%= submit_tag 'Import' %></p>
 	</fieldset>
