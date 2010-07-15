@@ -1,5 +1,5 @@
 class ImportFromCsvController < ApplicationController
-  before_filter :get_project
+  before_filter :get_project,:authorize
   helper :import_from_csv
   include ImportFromCsvHelper
   #menu_item :import_from_csv

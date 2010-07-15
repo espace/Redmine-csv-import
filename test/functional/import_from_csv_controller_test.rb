@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'import_from_csv_controller'
-
+require 'object_mock'
 class ImportFromCsvControllerTest < ActionController::TestCase
   fixtures :projects, :versions, :users, :roles, :members, :member_roles, :issues,
            :trackers, :projects_trackers, :issue_statuses,:enumerations
@@ -16,8 +16,10 @@ class ImportFromCsvControllerTest < ActionController::TestCase
     end
     context "get index" do
       should "response successfully" do
-        get :index,:project_id=>@project.identifier
-        assert_response :success
+        ApplicationController.class_mock(:authorize=>true) do
+          get :index,:project_id=>@project.identifier
+          assert_response :success
+        end
       end
     end
     
@@ -39,10 +41,12 @@ class ImportFromCsvControllerTest < ActionController::TestCase
       should "create new issues successfully" do
         old_count=Issue.count
         file=File.open(File.dirname(__FILE__) + '/../test1.csv','r')
-        post :csv_import,:project_id=>@project.identifier,:dump=>{:file=>file,:tracker_id=>@t.id}
-        assert flash[:notice]
-        assert_redirected_to :controller => :issues, :action => :index,:project_id=>@project.id
-        assert_equal Issue.count,old_count+3
+        ApplicationController.class_mock(:authorize=>true) do
+          post :csv_import,:project_id=>@project.identifier,:dump=>{:file=>file,:tracker_id=>@t.id}
+          assert flash[:notice]
+          assert_redirected_to :controller => :issues, :action => :index,:project_id=>@project.id
+          assert_equal Issue.count,old_count+3
+        end
       end
     end
     context "import bad csv file" do
@@ -60,10 +64,12 @@ class ImportFromCsvControllerTest < ActionController::TestCase
       should "not import successfully" do
         old_count=Issue.count
         file=File.open(File.dirname(__FILE__) + '/../test2.csv','r')
-        post :csv_import,:project_id=>@project.identifier,:dump=>{:file=>file,:tracker_id=>@t.id}
-        assert flash[:error]
-        assert_redirected_to :controller => :issues, :action => :index,:project_id=>@project.id
-        assert_equal Issue.count,old_count
+        ApplicationController.class_mock(:authorize=>true) do
+          post :csv_import,:project_id=>@project.identifier,:dump=>{:file=>file,:tracker_id=>@t.id}
+          assert flash[:error]
+          assert_redirected_to :controller => :issues, :action => :index,:project_id=>@project.id
+          assert_equal Issue.count,old_count
+        end
       end
     end
   end

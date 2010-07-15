@@ -19,3 +19,15 @@ end
 Factory.define :enabled_module do |em|
   em.sequence(:name){|n| "name#{n}"} 
 end
+
+#Factory.define :member do |member|
+#  member.project_id {Factory.create(:project).id}
+#end
+#
+#
+#Factory.define :role do |r|
+#  r.name "Team Leader"
+#  r.position 3
+#  r.assignable true
+#  r.permissions {[:import_from_csv]}
+#end

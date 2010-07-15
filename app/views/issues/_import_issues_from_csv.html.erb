@@ -1,1 +1,3 @@
-<p><%= link_to(l(:Import_label),:controller=>"import_from_csv",:action=>"index",:project_id=>@project) %></p>
+<% if User.current.allowed_to?({:controller =>"import_from_csv" , :action => "index"}, @project, :global =>false)%>
+  <p><%= link_to(l(:Import_label),:controller=>"import_from_csv",:action=>"index",:project_id=>@project) %></p>
+<%end%>
