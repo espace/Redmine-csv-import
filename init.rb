@@ -7,9 +7,17 @@ Redmine::Plugin.register :redmine_import_from_csv do
   author 'Basayel Said'
   description 'As a TL, can upload csv file with stories to automatically add stories'
   version '0.0.1'
-  permission :import_from_csv, {:import_from_csv => [:index, :csv_import]}, :public => true
+  project_module :issue_tracking do
+    permission :import_issues_from_csv, {:import_from_csv => [:index, :csv_import]} ,:require => :member  
+  end
 end
 
-Redmine::MenuManager.map :project_menu do |menu|
-  menu.push :import_from_csv, { :controller => 'import_from_csv', :action => 'index' }, :caption => 'Import from CSV', :after => :activity, :param => :project_id
-end
+#Redmine::AccessControl.map do |map|
+#  map.project_module :issue_tracking do |map|
+#    map.permission :import_from_csv, {:import_from_csv => [:index, :csv_import]}
+#  end
+#end
+
+#Redmine::MenuManager.map :project_menu do |menu|
+#  menu.push :import_from_csv, { :controller => 'import_from_csv', :action => 'index' }, :caption => 'Import from CSV', :after => :activity, :param => :project_id
+#end

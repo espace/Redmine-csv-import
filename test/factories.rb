@@ -15,3 +15,7 @@ Factory.define :tracker do |tracker|
   tracker.is_in_chlog true
   tracker.position 4
 end
+
+Factory.define :enabled_module do |em|
+  em.sequence(:name){|n| "name#{n}"} 
+end

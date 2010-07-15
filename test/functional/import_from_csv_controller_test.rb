@@ -7,6 +7,8 @@ class ImportFromCsvControllerTest < ActionController::TestCase
   context "Importing new issues from csv file" do
     setup do
       @project     = Factory.create(:project)
+      @module      = Factory.create(:enabled_module,:name=>"import_issues")
+      @project.enabled_modules <<  @module
       @request     = ActionController::TestRequest.new
       @response    = ActionController::TestResponse.new
       User.current = User.first
@@ -51,7 +53,7 @@ class ImportFromCsvControllerTest < ActionController::TestCase
         @project.trackers=trackers
         File.open(File.dirname(__FILE__) + '/../test2.csv', 'wb') do |file| 
           file.puts "Themes,Stories,Notes"
-          file.puts "A1,Subject1,Desc1"
+          file.puts "A1,,Desc1,8"
         end  
       end
       
@@ -60,7 +62,7 @@ class ImportFromCsvControllerTest < ActionController::TestCase
         file=File.open(File.dirname(__FILE__) + '/../test2.csv','r')
         post :csv_import,:project_id=>@project.identifier,:dump=>{:file=>file,:tracker_id=>@t.id}
         assert flash[:error]
-        assert_redirected_to :controller => :import_from_csv, :action => :index,:project_id=>@project.id
+        assert_redirected_to :controller => :issues, :action => :index,:project_id=>@project.id
         assert_equal Issue.count,old_count
       end
     end
